@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
       width: '70%',
       borderStyle: 'solid',
       borderBottomColor: 'silver',
-      borderBottomWidth: 1,
+      borderBottomWidth: 2,
       color: 'silver',
    },
    addButtom: {
