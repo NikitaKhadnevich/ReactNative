@@ -1,41 +1,50 @@
-import { StatusBar } from 'expo-status-bar';
 import React, {useState}  from 'react'
-import { FlatList, StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import { FlatList, StyleSheet, Text, View, TouchableOpacity, Alert, Modal } from 'react-native';
 
 
-
-const DeleteOneTodo = (deleteData, id) =>
+const DeleteOneTodo = (deleteData, id, showMes, mesState) =>
 Alert.alert(
    "Delete this todo?",
    "",
    [
-   {
-      text: "Cancel",
-      onPress: () => console.log("Cancel Pressed"),
-      style: "cancel"
-   },
-   { text: "OK", onPress: () => {
-      deleteData(id);
-      Alert.alert('Todos Deleted!') 
-   }
-}
+      {
+         text: "No",
+         onPress: () => console.log("Cancel Pressed on RenderTodo"),
+         style: "cancel"
+      },
+      { text: "Yes", onPress: () => {
+         deleteData(id)
+         showMes(!mesState); 
+         setTimeout(() => showMes(mesState), 800)
+         }
+      }
    ]
 );
 
-
 function RenderTodo( {dataForRender, deleteTodo} ) {
+   const [showModal, setShowModal] = useState(false);
    
    return (
-      <FlatList
+      <View>
+         <Modal
+            animationType={'slide'}
+            transparent={false}
+            visible={showModal}>
+            <View style={styles.modal} >
+               <Text style={styles.text}>Todo Deleted!</Text>
+            </View>
+         </Modal>
+
+         <FlatList contentContainerStyle={listStyle.containerStyle}
          data={dataForRender}
          keyExtractor={item => item.id.toString()}
          renderItem={({item, index} ) => (
-
+            
             <TouchableOpacity
             activeOpacity={0.5}
             onPress={() => console.log('Pressed')}
             onLongPress={() => {
-               DeleteOneTodo(deleteTodo, item.id)
+               DeleteOneTodo(deleteTodo, item.id, setShowModal, showModal)
                }
             }>
                <View style={styles.textBlock}>
@@ -58,10 +67,20 @@ function RenderTodo( {dataForRender, deleteTodo} ) {
             </TouchableOpacity>
          )}
       />
+      </View>
    )
 }
 
+const listStyle = {
+   containerStyle: {
+      paddingBottom: '35%'
+   }
+}
+
 const styles = StyleSheet.create({
+   flatBlock: {
+      marginBottom: 50
+   },
    textBlock: {
       flex: 1,
       flexDirection: 'row',
@@ -78,23 +97,33 @@ const styles = StyleSheet.create({
    renderIndex: {
       color: 'silver',
       paddingHorizontal: 2,
-      width: '3%'
+      width: '5%'
    },
    renderText: {
-      width: '82%',
+      width: '79%',
       color: 'silver',
       paddingHorizontal: 10,
       textAlign: 'justify'
    },
    renderInfo: {
-      width: '15%',
+      width: '16%',
       color: 'rgba(168, 168, 168, 0.3)',
       paddingHorizontal: 5,
    },
    whenAdded: {
       color: 'rgba(168, 168, 168, 0.3)',
       marginBottom: 15,
-   }
+   },
+   modal: {
+      flex: 5,
+      alignItems: 'center',
+      backgroundColor: 'rgba(168, 168, 168, 0.1)',
+      padding: 100,
+   },
+   text: {
+      color: '#3f2949',
+      marginTop: 10,
+   },
 })
 
 export default RenderTodo

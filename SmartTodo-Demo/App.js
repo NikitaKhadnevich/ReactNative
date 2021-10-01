@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState}  from 'react'
-import { StyleSheet, Text, View, ScrollView, FlatList } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, FlatList  } from 'react-native';
 import Navbar from './src/Navbar';
 import AddTodo from './src/AddTodo';
 import RenderTodo from './src/RenderTodo';
@@ -8,11 +8,10 @@ import RenderTodo from './src/RenderTodo';
 export default function App() {
   const [addTodo, SetaddTodo] = useState([])
   
-
-  const letAddTodo = (title) => {
+  const letAddTodo = (currentTitile) => {
     const newTodo = {
       id: Date.now().toString(),
-      title: title,
+      title: currentTitile,
       date: `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`,
     }
     SetaddTodo(prev => [
@@ -33,9 +32,11 @@ export default function App() {
         <AddTodo onSubmit={letAddTodo}/>
       </View>
       <View style={styles.renderBlock}>
+
         <RenderTodo
           dataForRender={addTodo}
           deleteTodo={letDeleteTodo} />
+
       </View>
 
       <StatusBar style="auto" />
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     justifyContent: 'space-between',
     paddingHorizontal: 15,
-    width:'100%'
+    width:'100%',
   },
 
 });
