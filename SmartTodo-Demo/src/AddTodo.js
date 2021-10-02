@@ -1,7 +1,7 @@
 import React, {useState}  from 'react'
 import {  } from 'react-native';
 import { StyleSheet, View, TextInput, Button, SafeAreaView } from 'react-native';
-import { ifIphoneX } from 'react-native-iphone-x-helper'
+
 
 function AddTodo( {onSubmit} ) {
    const [inputValue, setinputValue] = useState('')
@@ -12,18 +12,18 @@ function AddTodo( {onSubmit} ) {
          setinputValue('')
       }
       else {
-
       }
    }  
 
    return (
       <View style={styles.addBlock}>
          <TextInput style={styles.addInput}
+
             value={inputValue}
             onChangeText={info => setinputValue(info)} 
             placeholder='Add todo here...'
             autoCapitalize='sentences'
-            keyboardType='name-phone-pad'
+            keyboardType='web-search'
          /> 
          {inputValue ? 
             <Button 

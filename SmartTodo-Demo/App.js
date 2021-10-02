@@ -8,10 +8,11 @@ import RenderTodo from './src/RenderTodo';
 export default function App() {
   const [addTodo, SetaddTodo] = useState([])
   
-  const letAddTodo = (currentTitile) => {
+  const letAddTodo = (currentTitile, status) => {
     const newTodo = {
       id: Date.now().toString(),
       title: currentTitile,
+      todoStatus: status,
       date: `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`,
     }
     SetaddTodo(prev => [
@@ -28,15 +29,15 @@ export default function App() {
   return (
     <View style={styles.mainContainer}>
       <Navbar title={'Yours Todo'} />
+
       <View style={styles.wrapperContainer}>
         <AddTodo onSubmit={letAddTodo}/>
       </View>
+      
       <View style={styles.renderBlock}>
-
         <RenderTodo
           dataForRender={addTodo}
           deleteTodo={letDeleteTodo} />
-
       </View>
 
       <StatusBar style="auto" />

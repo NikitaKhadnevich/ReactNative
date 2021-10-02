@@ -1,72 +1,59 @@
-import React, {useState}  from 'react'
+import React, {useState, useMemo, useCallback}  from 'react'
 import { FlatList, StyleSheet, Text, View, TouchableOpacity, Alert, Modal } from 'react-native';
+import ListRenderedTodos from './ListRenderedTodos';
 
 
-const DeleteOneTodo = (deleteData, id, showMes, mesState) =>
-Alert.alert(
-   "Delete this todo?",
-   "",
-   [
-      {
-         text: "No",
-         onPress: () => console.log("Cancel Pressed on RenderTodo"),
-         style: "cancel"
-      },
-      { text: "Yes", onPress: () => {
-         deleteData(id)
-         showMes(!mesState); 
-         setTimeout(() => showMes(mesState), 800)
-         }
-      }
-   ]
-);
-
-function RenderTodo( {dataForRender, deleteTodo} ) {
+function RenderTodo( {letAddTodo, dataForRender, deleteTodo } ) {
    const [showModal, setShowModal] = useState(false);
-   
+   const ListRenderedTodosMemo = useMemo(() => ListRenderedTodos, [dataForRender])
+
+   const DeleteOneTodo = useCallback(
+      (deleteData, id, showMes, mesState) =>
+      Alert.alert(
+         "Delete this todo?",
+         "",
+         [
+            {
+               text: "No",
+               onPress: () => console.log("Cancel Pressed on RenderTodo"),
+               style: "cancel"
+            },
+            { text: "Yes", onPress: () => {
+               deleteData(id)
+               showMes(!mesState); 
+               setTimeout(() => showMes(mesState), 600)
+               }
+            }
+         ]
+      ),
+      [showModal],
+   )
+
    return (
       <View>
          <Modal
-            animationType={'slide'}
-            transparent={false}
-            visible={showModal}>
+         animationType={'fade'}
+         transparent={true}
+         visible={showModal}>
             <View style={styles.modal} >
                <Text style={styles.text}>Todo Deleted!</Text>
             </View>
          </Modal>
 
-         <FlatList contentContainerStyle={listStyle.containerStyle}
-         data={dataForRender}
-         keyExtractor={item => item.id.toString()}
-         renderItem={({item, index} ) => (
-            
-            <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={() => console.log('Pressed')}
-            onLongPress={() => {
-               DeleteOneTodo(deleteTodo, item.id, setShowModal, showModal)
-               }
-            }>
-               <View style={styles.textBlock}>
-                  <Text style={styles.renderIndex}>
-                     {index+1}
-                  </Text>
-                  <Text style={styles.renderText}>
-                     {item.title}
-                  </Text>
-                  <Text style={styles.renderInfo}>
-                     Hold to Delete
-                  </Text>
-               </View>
-               
-               <View >
-                  <Text style={styles.whenAdded}>
-                     Added {item.date}
-                  </Text>
-               </View>
-            </TouchableOpacity>
-         )}
-      />
+         <FlatList 
+            contentContainerStyle={listStyle.containerStyle}
+            data={dataForRender}
+            keyExtractor={item => item.id.toString()}
+            renderItem={( {item, index} ) => (
+               <ListRenderedTodosMemo
+                  DeleteOneTodo={DeleteOneTodo}
+                  deleteTodo={deleteTodo}
+                  item={item}
+                  setShowModal={setShowModal}
+                  showModal={showModal}
+                  index={index}/>   
+            )}
+         />
       </View>
    )
 }
@@ -78,52 +65,19 @@ const listStyle = {
 }
 
 const styles = StyleSheet.create({
-   flatBlock: {
-      marginBottom: 50
-   },
-   textBlock: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      borderWidth: 1,
-      borderColor: '#bcd4d436',
-      borderRadius: 4,
-      width: '100%',
-      paddingHorizontal: 5,
-      paddingVertical: 10,
-      marginVertical: 5,
-   },
-   renderIndex: {
-      color: 'silver',
-      paddingHorizontal: 2,
-      width: '5%'
-   },
-   renderText: {
-      width: '79%',
-      color: 'silver',
-      paddingHorizontal: 10,
-      textAlign: 'justify'
-   },
-   renderInfo: {
-      width: '16%',
-      color: 'rgba(168, 168, 168, 0.3)',
-      paddingHorizontal: 5,
-   },
-   whenAdded: {
-      color: 'rgba(168, 168, 168, 0.3)',
-      marginBottom: 15,
-   },
    modal: {
-      flex: 5,
+      flex: 1,
       alignItems: 'center',
-      backgroundColor: 'rgba(168, 168, 168, 0.1)',
-      padding: 100,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+      paddingVertical: '50%',
    },
    text: {
-      color: '#3f2949',
+      fontSize: 20,
+      alignItems: 'center',
+      color: 'rgba(180, 60, 60, 0.9)',
       marginTop: 10,
    },
 })
 
-export default RenderTodo
+export default RenderTodo 
+
