@@ -1,36 +1,65 @@
-import React, {useState, useMemo, useCallback}  from 'react'
-import { FlatList, StyleSheet, Text, View, TouchableOpacity, Alert, Modal } from 'react-native';
+import React, {useState, useMemo, useCallback, useEffect}  from 'react'
+import { FlatList, StyleSheet, Button, Text, View, Alert, Modal } from 'react-native';
 import ListRenderedTodos from './ListRenderedTodos';
 
 
-function RenderTodo( {letAddTodo, dataForRender, deleteTodo } ) {
+function RenderTodo(props) {
+   const {children: [
+      addTodo,
+      filtredTodo,
+      letDeleteTodo,
+      updateStatus,
+      letFiltredTodo]} = props
+
+      console.log(addTodo)
+      console.log(filtredTodo)
+
    const [showModal, setShowModal] = useState(false);
-   const ListRenderedTodosMemo = useMemo(() => ListRenderedTodos, [dataForRender])
+   const [currentState, setCurrentState] = useState('');
+
+   const ListRenderedTodosMemo = useMemo(() => 
+   ListRenderedTodos, [addTodo])
 
    const DeleteOneTodo = useCallback(
-      (deleteData, id, showMes, mesState) =>
+      (letDeleteTodo, id, showMes, mesState) =>
       Alert.alert(
          "Delete this todo?",
          "",
          [
             {
                text: "No",
-               onPress: () => console.log("Cancel Pressed on RenderTodo"),
+               onPress: () => console.log(`Cancel Pressed on RenderTodo ${id}`),
                style: "cancel"
             },
             { text: "Yes", onPress: () => {
-               deleteData(id)
+               letDeleteTodo(id)
                showMes(!mesState); 
                setTimeout(() => showMes(mesState), 600)
                }
             }
          ]
       ),
-      [showModal],
+      [addTodo]
    )
+
+   useEffect(() => {
+      setCurrentState([...addTodo])
+   }, [addTodo])
 
    return (
       <View>
+
+         <Button 
+            title='Lets All!'  
+            onPress={() => 
+               setCurrentState([...addTodo])}/>
+
+         <Button 
+            title='Lets Filter!'  
+            onPress={() => 
+               setCurrentState(letFiltredTodo(addTodo))
+         }/>
+      
          <Modal
          animationType={'fade'}
          transparent={true}
@@ -40,18 +69,21 @@ function RenderTodo( {letAddTodo, dataForRender, deleteTodo } ) {
             </View>
          </Modal>
 
+
          <FlatList 
             contentContainerStyle={listStyle.containerStyle}
-            data={dataForRender}
+            data={currentState}
             keyExtractor={item => item.id.toString()}
             renderItem={( {item, index} ) => (
                <ListRenderedTodosMemo
                   DeleteOneTodo={DeleteOneTodo}
-                  deleteTodo={deleteTodo}
+                  letDeleteTodo={letDeleteTodo}
                   item={item}
                   setShowModal={setShowModal}
                   showModal={showModal}
-                  index={index}/>   
+                  index={index}
+                  updateStatus={updateStatus}
+                  />   
             )}
          />
       </View>
