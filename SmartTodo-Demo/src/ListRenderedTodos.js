@@ -11,16 +11,20 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const ListRenderedTodos = ( 
    {
-   deleteTodo,
+   letDeleteTodo,
    item,
    setShowModal,
    showModal,
    index,
-   DeleteOneTodo} ) => {
-   const [todoStatus, setTodoStatus] = useState(false)
-   const checkerMemo = useMemo(() => setTodoStatus, [item])
+   DeleteOneTodo,
+   updateStatus} ) => {
+      const [todoStatus, setTodoStatus] = useState(false)
 
-   console.log(`render`)
+      const checkerWrapper = (id, status) => {
+         setTodoStatus(prev => !prev);
+         updateStatus(id, status)
+      }
+
       const rightSwipe = (progress, dragX) => {
          const scale = dragX.interpolate({
             inputRange: [0, 100],
@@ -31,22 +35,24 @@ const ListRenderedTodos = (
          return (
          <TouchableOpacity 
             onPress={() =>  DeleteOneTodo(
-               deleteTodo,
+               letDeleteTodo,
                item.id,
                setShowModal,
-               showModal)}
+               showModal)
+            }
                activeOpacity={0.7}>
             <View style={styles.deleteBox}>
                <Animated.Text style={{transform: [{scale: scale}]}}>
-               Delete
+                  Delete
                </Animated.Text>
             </View>
          </TouchableOpacity>
          );
       }
 
+
    return (
-      <TouchableOpacity 
+      <TouchableOpacity
          activeOpacity={0.7}>
          <Swipeable renderRightActions={rightSwipe}>
             <View style={styles.containerList}>
@@ -70,13 +76,14 @@ const ListRenderedTodos = (
                      fillColor="green"
                      unfillColor="#eee"
                      iconStyle={{ borderColor: "silver" }}
-                     onPress={checkerMemo}
+                     onPress={() => checkerWrapper(item.id, todoStatus)}
                   />
                </View>
 
                <View style={styles.infoBlock}>
                   <Text style={styles.whenAdded}>
                      Added {item.date}
+                     {item.id}
                   </Text>
                   <Text style={todoStatus ?
                      styles.textStatusDone :
@@ -114,6 +121,7 @@ const styles = StyleSheet.create({
       paddingVertical: 10,
       marginVertical: 5,
    },
+   
    renderIndex: {
       color: 'silver',
       paddingHorizontal: 0,
@@ -159,6 +167,7 @@ const styles = StyleSheet.create({
       marginLeft: 5,
       minWidth: 70,
       minHeight: 50,
+      height: 'auto',
       borderRadius: 2,
    },
 })
