@@ -7,7 +7,6 @@ import ModalDeletedNote from "../../components/ModalWindows/ModalDeletedNote";
 function NoteList({ children }) {
   const [
     fullNotesList,
-    buttonStyle,
     showAllNotes,
     showDoneNotes,
     showDoingNotes,

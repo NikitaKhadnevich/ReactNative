@@ -1,15 +1,13 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import ListRenderedTodos from "./ListRenderedTodos";
 
 import {
-  SET_FULL_LIST,
   SET_DONE_LIST,
   SET_IN_PROGRESS_LIST,
   UPDATE_FULL_LIST,
 } from "../../reduxApi/notesList/notesToolkit";
-import { fullList, doneList } from "../../reduxApi/notesList/notesSelectors";
+import { fullList } from "../../reduxApi/notesList/notesSelectors";
 
 import DoneList from "./DoneList";
 import useDeleteNote from "../../helpers/useDeleteNote";
@@ -20,7 +18,6 @@ function DoneListContainer() {
   const dispatch = useDispatch();
 
   const [showModal, setShowModal] = useState(false);
-  const [buttonStyle, setButtonStyle] = useState("Full");
 
   const deleteNote = useDeleteNote();
   const updateNoteStatus = useUpdateNote();
@@ -40,34 +37,31 @@ function DoneListContainer() {
           onPress: () => {
             deleteNote(fullNotesList, id, UPDATE_FULL_LIST);
             showMes(!mesState);
-            setTimeout(() => showMes(mesState), 600);
+            setTimeout(() => showMes(mesState), 300);
           },
         },
       ]),
     [fullNotesList]
   );
 
-  const showDoneNotes = (arr, buttonTitle) => {
-    const markedArray = arr.filter((element) => element.inProcess == false);
+  const showDoneNotes = (arr) => {
+    const markedArray = arr.filter((element) => element.inProgess == false);
     dispatch(SET_DONE_LIST(markedArray));
-    setButtonStyle(buttonTitle);
   };
 
-  const showDoingNotes = (arr, buttonTitle) => {
-    const markedArray = arr.filter((element) => element.inProcess == true);
+  const showDoingNotes = (arr) => {
+    const markedArray = arr.filter((element) => element.inProgess == true);
     dispatch(SET_IN_PROGRESS_LIST(markedArray));
-    setButtonStyle(buttonTitle);
   };
 
   useEffect(() => {
-    showDoneNotes(fullNotesList, "Full");
-    showDoingNotes(fullNotesList, "Full");
+    showDoneNotes(fullNotesList);
+    showDoingNotes(fullNotesList);
   }, [fullNotesList]);
 
   return (
     <DoneList>
       {fullNotesList}
-      {buttonStyle}
       {showDoneNotes}
       {showDoingNotes}
       {showModal}

@@ -1,15 +1,13 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { FlatList, StyleSheet, View, Alert, Text } from "react-native";
 import ListRenderedTodos from "./ListRenderedTodos";
-import FolderButtons from "../../components/FolderButtons/FolderButtons";
 import ModalDeletedNote from "../../components/ModalWindows/ModalDeletedNote";
 import { doneList } from "../../reduxApi/notesList/notesSelectors";
 import { useSelector } from "react-redux";
 
-function NoteList({ children }) {
+function DoneList({ children }) {
   const [
     fullNotesList,
-    buttonStyle,
     showDoneNotes,
     showDoingNotes,
     showModal,
@@ -22,14 +20,14 @@ function NoteList({ children }) {
     () => ListRenderedTodos,
     [fullNotesList]
   );
-  const doneNoteList = useSelector(doneList);
+  const doneNoteListData = useSelector(doneList);
 
   return (
     <View style={styles.renderBlock}>
-      {doneNoteList.length ? (
+      {doneNoteListData.length ? (
         <FlatList
           contentContainerStyle={listStyle.containerStyle}
-          data={doneNoteList}
+          data={doneNoteListData}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item, index }) => (
             <ListRenderedTodosMemo
@@ -78,4 +76,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NoteList;
+export default DoneList;

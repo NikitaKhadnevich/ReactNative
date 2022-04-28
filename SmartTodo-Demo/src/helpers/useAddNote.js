@@ -7,7 +7,7 @@ export default function useAddNote(currentTitile) {
   const newTodo = {
     id: Date.now().toString(),
     title: currentTitile,
-    inProcess: false,
+    inProgess: true,
     date: `${date} ${time}`,
   };
   return (requestAction) => {

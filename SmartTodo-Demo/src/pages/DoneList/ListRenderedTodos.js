@@ -25,7 +25,7 @@ const ListRenderedTodos = ({
   const fullNotesList = useSelector(fullList);
   const IN_PROCESS = true;
 
-  const rightSwipe = (progress, dragX, inProcess) => {
+  const rightSwipe = (progress, dragX) => {
     const scale = dragX.interpolate({
       inputRange: [0, 100],
       outputRange: [1, 0],

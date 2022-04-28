@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import CheckBox from "@react-native-community/checkbox";
 import {
   View,
   Text,
   StyleSheet,
   Animated,
-  CheckBox,
   Alert,
   TouchableOpacity,
   Button,
@@ -24,7 +24,7 @@ const ListRenderedTodos = ({
   deleteOneNote,
   updateNoteStatus,
 }) => {
-  const [inProcess, setTodoStatus] = useState(false);
+  const [toggleCheckBox, setToggleCheckBox] = useState(!item.inProgess);
   const fullNotesList = useSelector(fullList);
 
   const checkerWrapper = (id, status) => {
@@ -32,14 +32,14 @@ const ListRenderedTodos = ({
     updateNoteStatus(fullNotesList, id, UPDATE_FULL_LIST, status);
   };
 
-  // Нужно придумать как сделать рефетч
-
   const rightSwipe = (progress, dragX) => {
     const scale = dragX.interpolate({
       inputRange: [0, 100],
       outputRange: [1, 0],
       extrapolate: "clamp",
     });
+
+    console.log("ON NOTELIST", item.inProgess);
 
     return (
       <>
@@ -75,22 +75,30 @@ const ListRenderedTodos = ({
         <View style={styles.containerList}>
           <View style={styles.textBlock}>
             <Text style={styles.renderIndex}>{index + 1}</Text>
-
             <Text
               style={
-                !item.inProcess ? styles.renderTextDone : styles.renderTextDoing
+                item.inProgess ? styles.renderTextDoing : styles.renderTextDone
               }
             >
               {item.title}
             </Text>
+            {/* <View>
+              <CheckBox
+                value={toggleCheckBox}
+                onValueChange={(newValue) => {
+                  checkerWrapper(item.id, !item.inProgess);
+                  setToggleCheckBox(newValue);
+                }}
+              />
+            </View> */}
 
             <BouncyCheckbox
               style={styles.checkBox}
-              isChecked={!item.inProcess}
+              isChecked={!item.inProgess}
               fillColor="green"
               unfillColor="#eee"
               iconStyle={{ borderColor: "silver" }}
-              onPress={() => checkerWrapper(item.id, !item.inProcess)}
+              onPress={() => checkerWrapper(item.id, !item.inProgess)}
             />
           </View>
 
@@ -98,10 +106,10 @@ const ListRenderedTodos = ({
             <Text style={styles.whenAdded}>Added {item.date}</Text>
             <Text
               style={
-                !item.inProcess ? styles.textStatusDone : styles.textStatusDoing
+                item.inProgess ? styles.textStatusDoing : styles.textStatusDone
               }
             >
-              {!item.inProcess ? "Done" : "Doing..."}
+              {item.inProgess ? "In progress..." : "Done"}
             </Text>
           </View>
         </View>
@@ -209,3 +217,5 @@ const styles = StyleSheet.create({
 });
 
 export default ListRenderedTodos;
+
+//    // "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",

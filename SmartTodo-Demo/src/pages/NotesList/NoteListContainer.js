@@ -18,7 +18,6 @@ function NoteListContainer() {
   const dispatch = useDispatch();
 
   const [showModal, setShowModal] = useState(false);
-  const [buttonStyle, setButtonStyle] = useState("Full");
 
   const deleteNote = useDeleteNote();
   const updateNoteStatus = useUpdateNote();
@@ -45,27 +44,23 @@ function NoteListContainer() {
     [fullNotesList]
   );
 
-  const showAllNotes = (arr, buttonTitle) => {
+  const showAllNotes = (arr) => {
     dispatch(UPDATE_FULL_LIST(arr));
-    setButtonStyle(buttonTitle);
   };
 
-  const showDoneNotes = (arr, buttonTitle) => {
-    const markedArray = arr.filter((element) => !element.inProcess);
+  const showDoneNotes = (arr) => {
+    const markedArray = arr.filter((element) => !element.inProgess);
     dispatch(SET_DONE_LIST(markedArray));
-    setButtonStyle(buttonTitle);
   };
 
-  const showDoingNotes = (arr, buttonTitle) => {
-    const markedArray = arr.filter((element) => element.inProcess == true);
+  const showDoingNotes = (arr) => {
+    const markedArray = arr.filter((element) => element.inProgess == true);
     dispatch(SET_IN_PROGRESS_LIST(markedArray));
-    setButtonStyle(buttonTitle);
   };
 
   return (
     <NoteList>
       {fullNotesList}
-      {buttonStyle}
       {showAllNotes}
       {showDoneNotes}
       {showDoingNotes}
