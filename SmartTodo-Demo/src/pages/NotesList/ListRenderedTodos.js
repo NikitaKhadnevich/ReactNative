@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
+import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import CheckBox from "@react-native-community/checkbox";
 import {
   View,
   Text,
@@ -8,10 +8,9 @@ import {
   Animated,
   Alert,
   TouchableOpacity,
-  Button,
 } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
+import CheckBox from "expo-checkbox";
 import { fullList } from "../../reduxApi/notesList/notesSelectors";
 
 import { UPDATE_FULL_LIST } from "../../reduxApi/notesList/notesToolkit";
@@ -24,11 +23,9 @@ const ListRenderedTodos = ({
   deleteOneNote,
   updateNoteStatus,
 }) => {
-  const [toggleCheckBox, setToggleCheckBox] = useState(!item.inProgess);
   const fullNotesList = useSelector(fullList);
 
   const checkerWrapper = (id, status) => {
-    setTodoStatus((prev) => !prev);
     updateNoteStatus(fullNotesList, id, UPDATE_FULL_LIST, status);
   };
 
@@ -82,23 +79,13 @@ const ListRenderedTodos = ({
             >
               {item.title}
             </Text>
-            {/* <View>
-              <CheckBox
-                value={toggleCheckBox}
-                onValueChange={(newValue) => {
-                  checkerWrapper(item.id, !item.inProgess);
-                  setToggleCheckBox(newValue);
-                }}
-              />
-            </View> */}
-
-            <BouncyCheckbox
-              style={styles.checkBox}
-              isChecked={!item.inProgess}
-              fillColor="green"
-              unfillColor="#eee"
-              iconStyle={{ borderColor: "silver" }}
-              onPress={() => checkerWrapper(item.id, !item.inProgess)}
+            <CheckBox
+              style={
+                item.inProgess ? styles.doingCheckBox : styles.doneCheckBox
+              }
+              value={!item.inProgess}
+              onValueChange={() => checkerWrapper(item.id, !item.inProgess)}
+              color={!item.inProgess ? "green" : "silver"}
             />
           </View>
 
@@ -131,10 +118,18 @@ const styles = StyleSheet.create({
   flatBlock: {
     marginBottom: 50,
   },
-  checkBox: {
-    marginLeft: 10,
-    marginRight: 3,
-    width: 25,
+  doingCheckBox: {
+    borderColor: "silver",
+    borderRadius: 20,
+    width: 20,
+    height: 20,
+  },
+  doneCheckBox: {
+    color: "red",
+    borderColor: "green",
+    borderRadius: 50,
+    width: 20,
+    height: 20,
   },
   wrapperSwiper: {
     display: "flex",
