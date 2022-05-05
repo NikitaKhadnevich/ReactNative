@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { View, Text, StyleSheet, FlatList, Animated } from 'react-native';
 import ListRenderedTodos from './ListRenderedTodos';
+import { useQuery } from '@apollo/client';
 
 import {
   SET_DONE_LIST,
@@ -13,22 +14,36 @@ import { fullList } from '../../reduxApi/notesList/notesSelectors';
 import useDeleteNote from '../../helpers/useDeleteNote';
 import useUpdateNote from '../../helpers/useUpdateNote';
 
-const doneNoteListData = [
-  {
-    id: 1,
-    title: 'EEEE',
-    inProgess: false,
-    date: '123123123',
-  },
-];
+import { gql } from '@apollo/client';
+
+export const GET_ALL_USERS = gql`
+  fragment userFields on User {
+    id
+    username
+    age
+    posts {
+      content
+    }
+  }
+
+  query {
+    getAllUsers {
+      ...userFields
+    }
+  }
+`;
 
 function GraphListContainer() {
+  const { data, loading, refetch } = useQuery(GET_ALL_USERS);
+
+  console.log('data', data);
+
   return (
     <View style={styles.renderBlock}>
-      {doneNoteListData.length ? (
+      {data ? (
         <FlatList
           contentContainerStyle={listStyle.containerStyle}
-          data={doneNoteListData}
+          data={data.getAllUsers}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item, index }) => (
             <ListRenderedTodos item={item} index={index} />
